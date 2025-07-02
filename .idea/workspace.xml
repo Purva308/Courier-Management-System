@@ -4,25 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a0d37506-b890-4071-bda3-8d5d63c0b104" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/CourierManagement(Assignment).iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DB" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dao/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/db.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/entity/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/entity/courier.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/entity/user.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/exception/InvalidEmployeeIdException.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/exception/TrackingNumberNotFoundException.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/exception/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/main/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/util/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/util/db_conn_util.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/util/db_prop_util.py" afterDir="false" />
+    <list default="true" id="a0d37506-b890-4071-bda3-8d5d63c0b104" name="Changes" comment="Initial Commit">
+      <change beforePath="$PROJECT_DIR$/entity/courier.py" beforeDir="false" afterPath="$PROJECT_DIR$/entity/courier.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -39,6 +22,18 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "Purva308"
+  }
+}]]></component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/Purva308/Courier-Management-System",
+    "accountId": "8c487b67-3b69-4682-9d74-dca594250d2f"
+  }
+}]]></component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 0
 }</component>
@@ -62,7 +57,7 @@
     "settings.editor.selected.configurable": "vcs.Git"
   }
 }]]></component>
-  <component name="RunManager" selected="Python.db_conn_util">
+  <component name="RunManager" selected="Python.db_prop_util">
     <configuration name="db_conn_util" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="CourierManagement(Assignment)" />
       <option name="ENV_FILES" value="" />
@@ -131,8 +126,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.db_conn_util" />
         <item itemvalue="Python.db_prop_util" />
+        <item itemvalue="Python.db_conn_util" />
         <item itemvalue="Python.user" />
       </list>
     </recent_temporary>
@@ -152,6 +147,15 @@
       <option name="presentableId" value="Default" />
       <updated>1751222667105</updated>
     </task>
+    <task id="LOCAL-00001" summary="Initial Commit">
+      <option name="closed" value="true" />
+      <created>1751444225341</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1751444225341</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -164,5 +168,9 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Initial Commit" />
+    <option name="LAST_COMMIT_MESSAGE" value="Initial Commit" />
   </component>
 </project>

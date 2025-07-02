@@ -1,0 +1,496 @@
+-- Task 1 
+USE couriermanagementsystem;
+CREATE TABLE Users 
+(
+UserID INT PRIMARY KEY  auto_increment,
+Name VARCHAR(255) NOT NULL,
+Email VARCHAR(255) UNIQUE NOT NULL,
+Password VARCHAR(255) NOT NULL, -- In a real application ,store hashed passwords
+ContactNumber VARCHAR(20),
+Address TEXT,
+Role VARCHAR(50),
+CourierID int references courier(CourierID) on delete cascade on update cascade
+);
+desc Users;
+select * from Users;
+drop table users;
+CREATE TABLE Employees
+(
+EmployeeID INT PRIMARY KEY auto_increment,
+Name VARCHAR(255),
+Email VARCHAR(255) UNIQUE,
+ContactNumber VARCHAR(20),
+Role VARCHAR(50),
+Salary DECIMAL(10, 2)
+);
+desc Employees;
+drop table employees;
+CREATE TABLE Location
+(
+LocationID INT PRIMARY KEY auto_increment,
+LocationName VARCHAR(100),
+Address TEXT
+);
+drop table location;
+desc location;
+CREATE TABLE Courier
+(
+CourierID INT PRIMARY KEY auto_increment,
+SenderName VARCHAR(255),
+SenderAddress TEXT,
+ReceiverName VARCHAR(255),
+ReceiverAddress TEXT,
+Weight DECIMAL(5, 2),
+Status VARCHAR(50),
+TrackingNumber int auto_increment unique,
+PickupTime time,
+DeliveryDate date,
+EmployeeID INT references Employees(EmployeeID) on delete cascade on update cascade,
+LocationID INT references Location(LocationID) on delete cascade on update cascade,
+ServiceID INT references courierservices(ServiceID) on delete cascade on update cascade
+);
+desc courier;
+drop table courier;
+drop table courier;
+CREATE TABLE CourierServices
+(
+ServiceID INT PRIMARY KEY auto_increment,
+ServiceName VARCHAR(100),
+Cost DECIMAL(8, 2)
+);
+drop table courierservices;
+CREATE TABLE Payment 
+(
+PaymentID INT PRIMARY KEY auto_increment,
+CourierID INT references courier(CourierID) on delete cascade on update cascade,
+LocationID INT references location(LocationID) on delete cascade on update cascade,
+Amount DECIMAL(10,2),
+PaymentDate DATE
+);
+drop table payment;
+desc Courier;
+drop table Courier;
+
+insert into users (Name,Email,Password,ContactNumber,Address,Role,CourierID)
+values ( 'Alice Smith', 'alice.smith@example.com', 'hashed_pass_alice_123', '9876543210', '101 Elm St, Springfield','Customer',1),
+('Bob Johnson', 'bob.j@example.com', 'hashed_pass_bob_456', '9988776655', '202 Oak Ave, Rivertown','Employee',2),
+( 'Carol White', 'carol.w@example.com', 'hashed_pass_carol_789', '9123456789', '303 Pine Ln, Hillside', 'Admin',3),
+( 'David Brown', 'david.b@example.com', 'hashed_pass_david_abc', '9012345678', '404 Birch Rd, Lakeside','Customer',4),
+( 'Eva Green', 'eva.g@example.com', 'hashed_pass_eva_def', '9234567890', '505 Cedar Blvd, Meadowville','Customer',5),
+( 'Frank Black', 'frank.b@example.com', 'hashed_pass_frank_ghi', '9345678901', '606 Spruce Ct, Summerville', 'Admin',6),
+( 'Grace Lee', 'grace.l@example.com', 'hashed_pass_grace_jkl', '9456789012', '707 Maple Dr, Winterton', 'Employee',7),
+( 'Henry Miller', 'henry.m@example.com', 'hashed_pass_henry_mno', '9567890123', '808 Ash Pk, Autumn Creek','Admin',8),
+( 'Ivy Davis', 'ivy.d@example.com', 'hashed_pass_ivy_pqr', '9678901234', '909 Willow Wy, Springbrook','Customer',9),
+( 'Jack Wilson', 'jack.w@example.com', 'hashed_pass_jack_stu', '9789012345', '100 Poplar Pl, Gentleville','Employee',10);
+select * from Users;
+insert into courier  (CourierID,SenderName,SenderAddress,ReceiverName,ReceiverAddress,Weight,Status,TrackingNumber,PickupTime,DeliveryDate,EmployeeID,LocationID,ServiceID)
+values(1, 'Alice Smith', '101 Elm St, Springfield', 'Bob Johnson', '456 Oak Ave, Somewhere', 2.5, 'In Transit', 'T123456789', '10:00:00','2025-06-15',1,1,101),
+(2, 'David Brown', '789 Pine Ln, Nowhere', 'Diana Prince', '404 Birch Rd, Lakeside', 1.8, 'Delivered', 'T987654321', '11:00:00','2025-06-10',2,1,102),
+(3, 'Eve Adams', '321 Maple Dr, Gotham', 'Frank White', '654 Birch Rd, Smallville', 5.0, 'Pending Pickup', 'T567890123', NULL,null,3,3,103),
+(4, 'Grace Lee', '707 Maple Dr, Winterton', 'Henry King', '234 Willow Way, Star City', 0.7, 'Out for Delivery', 'T112233445', '12:00:00','2025-06-12',4,2,104),
+(5, 'Ivy Davis', '909 Willow Wy, Springbrook', 'Jack Wilson', '100 Poplar Pl, Gentleville', 3.2, 'Delivered', 'T667788990', '13:00:00','2025-06-08',5,5,105),
+(6, 'Karen Green', '222 River Rd, Riverton', 'Liam Scott', '777 Mountain St, Hilltop', 0.5, 'In Transit', 'T001122334', '09:30:00', '2025-06-16',6,3,106),
+(7, 'Grace Lee', '333 Forest Ave, Woodland', 'Nancy Hall', '888 Desert Ln, Drytown', 10.0, 'Delivered', 'TRK445566778', '13:00:00','2025-06-05',7,2,107),
+(8, 'Olivia Taylor', '444 Park Pl, Greendale', 'Peter Adams', '999 Valley View, Sunnyside', 2.1, 'Pending Pickup', 'T990011223', NULL,null,8,7,108),
+(9, 'Grace Lee', '555 High St, Uptown', 'Rachel Miller', '111 Low Rd, Downtown', 1.3, 'Out for Delivery', 'T334455667', '12:00:00 ','2025-06-13',9,9,109),
+(10, 'Sam Carter', '666 Circle Dr, Roundabout', 'Tina Garcia', '222 Square Ave, Blockville', 4.0, 'In Transit', 'T778899001', '14:00:00','2025-06-17',10,10,110);
+select * from Courier;
+insert into courierservices (ServiceID,ServiceName,Cost)
+values (101, 'Standard Delivery', 1500.00),
+(102, 'Express Delivery', 120.00),
+(103, 'Same-Day Delivery', 2050.00),
+(104, 'International Economy', 500.00),
+(105, 'International Express', 1200.00),
+(106, 'Fragile Goods Handling', 80.00),
+(107, 'Perishable Goods Transport', 1520.00),
+(108, 'Document Courier', 30.00),
+(109, 'Heavy Item Transport', 3020.00),
+(110, 'Weekend Delivery', 750.00
+);
+drop table courierservices;
+select* from courierservices;
+insert into employees(EmployeeID,Name,Email,ContactNumber,Role,Salary)
+values (1, 'John Doe', 'john.doe@example.com', '9876543210', 'Courier Driver', 45000.00),
+(2, 'Jane Smith', 'jane.smith@example.com', '9876543211', 'IT Support', 55000.00),
+(3, 'Robert Johnson', 'robert.j@example.com', '9876543212', 'Customer Service Rep', 40000.00),
+(4, 'Emily White', 'emily.w@example.com', '9876543213', 'Warehouse Manager', 60000.00),
+(5, 'Michael Brown', 'michael.b@example.com', '9876543214', 'Dispatcher', 50000.00),
+(6, 'Jessica Davis', 'jessica.d@example.com', '9876543215', 'HR Manager', 65000.00),
+(7, 'David Garcia', 'david.g@example.com', '9876543216', 'Customer Service Rep', 48000.00),
+(8, 'Sarah Rodriguez', 'sarah.r@example.com', '9876543217', 'Marketing Specialist', 52000.00),
+(9, 'Chris Lee', 'chris.l@example.com', '9876543218', 'IT Support', 58000.00),
+(10, 'Amanda Martinez', 'amanda.m@example.com', '9876543219', 'Accountant', 62000.00
+);
+drop table if exists employees ;
+select*from employees;
+insert into location (LocationID,LocationName,Address)values(1, 'Central Hub', '100 Main St, Anytown, State, 12345'),
+(2, 'North Depot', '250 Oak Ave, Northville, State, 54321'),
+(3, 'South Warehouse', '500 Pine Ln, Southpark, State, 67890'),
+(4, 'East Distribution Center', '750 Elm St, Eastford, State, 98765'),
+(5, 'West Branch Office', '900 Maple Dr, Westmont, State, 01234'),
+(6, 'Downtown Sorting Facility', '123 Market St, Metropoli, State, 11223'),
+(7, 'East Distribution Cente', '456 Aviation Blvd, Airville, State, 33445'),
+(8, 'Rural Collection Point', '789 Tech Rd, Industrious, State, 55667'),
+(9, 'Rural Collection Point', '101 Countryside Ln, Farmdale, State, 77889'),
+(10, 'North Depot', '202 Harbor Dr, Portside, State, 99001'
+);
+drop table location;
+
+select* from location;
+insert into payment (PaymentID,CourierID,LocationId,Amount,PaymentDate)
+values (1, 1, 1, 1000.00, '2025-06-15'),
+(2, 1, 2, 1220.00, '2025-06-10'),
+(3, 1, 3, 25000.00, '2025-06-11'),
+(4, 2, 3, 3744.00, '2025-06-12'),
+(5, 2, 5, 4000.00, '2025-06-08'),
+(6, 3, 6, 500.00, '2025-06-16'),
+(7, 5, 6, 1000.00, '2025-06-05'),
+(8, 6, 8, 2000.00, '2025-06-09'),
+(9, 2, 3, 12002.00, '2025-06-13'),
+(10, 9, 10, 2345.00, '2025-06-17'
+);
+update courier set status ='undelivered' where CourierID in(1,6, 10);
+update courier set status ='delivery today' where CourierID in(4,9);
+select*from payment; 
+use couriermanagementsystem;
+-- Task 2 Select,Where
+-- 1. List all customers:
+select UserID,Name, Email,ContactNumber,Address
+from users
+where Role='Customer';
+
+-- 2. List all orders for a specific customer:
+select * from courier as c
+join users as u on(c.SenderName=u.Name and c.SenderAddress=u.Address) or(c.ReceiverName=u.Name and c.ReceiverAddress=u.Address)
+Where u.UserID = 9;
+
+-- 3. List all couriers:
+select * from courier;
+
+-- 4. List all packages for a specific order:
+select * from courier where CourierID=7;
+
+-- 5. List all deliveries for a specific courier:
+select Status from courier where CourierID= 7;
+
+-- 6. List all undelivered packages:
+select * 
+from courier 
+where Status ='Undelivered';
+
+-- 7. List all packages that are scheduled for delivery today:
+select * 
+from Courier
+where DeliveryDate = CURRENT_DATE; 
+
+-- 8. List all packages with a specific status:
+select * 
+from courier 
+where Status ='delivery today';
+
+-- 9. Calculate the total number of packages for each courier.
+select CourierID ,SenderName,ReceiverName ,count(CourierID) as Total_Packages 
+from courier
+group by CourierID,SenderName,ReceiverName;
+            
+-- 10. Find the average delivery time for each courier
+select CourierID, avg(timestampdiff(MINUTE,PickupTime,DeliveryDate))as AverageDeliveryTime
+from courier 
+group by CourierID 
+order by 1 desc ;
+
+-- 11. List all packages with a specific weight range:
+select * from courier where Weight>=2 and Weight<=7;
+
+-- 12. Retrieve employees whose names contain 'John'
+use couriermanagementsystem;
+select * from employees;
+select Name from employees
+where Name like"%John%";
+
+-- 13. Retrieve all courier records with payments greater than $50.
+select c.* ,p.Amount from courier c
+inner join payment p using(CourierID)
+where Amount > 50;
+
+-- Task 3: GroupBy, Aggregate Functions, Having, Order By, where
+-- 14. Find the total number of couriers handled by each employee.
+select EmployeeID , count(CourierID) as total_courier_handled from courier 
+group by EmployeeID;
+
+-- 15. Calculate the total revenue generated by each location
+select LocationName , count(Amount) as total_revenue_generated
+from payment inner join location using (LocationID)
+group by LocationName
+order by 2 desc;
+
+-- 16. Find the total number of couriers delivered to each location.
+select LocationName, count(CourierID) as total_delivered_packages
+from courier join location using(LocationID)
+where Status='delivered'
+group by LocationName
+order by 2 desc;
+
+-- 17. Find the courier with the highest average delivery time:
+select CourierID,avg(timestampdiff(minute,PickupTime,DeliveryDate)) as HighestAverageDelivery
+from courier
+group by CourierID
+order by 2 desc
+limit 1;
+
+-- 18. Find Locations with Total Payments Less Than a Certain Amount
+select LocationName,sum(Amount) as TotalPayments
+from payment join location on payment.LocationID=location.LocationID
+where Amount is not null
+group by location.LocationID,LocationName
+having sum(Amount) < 1000;
+
+-- 19. Calculate Total Payments per Location
+select LocationName,sum(Amount) as TotalPayments
+from payment join location on payment.LocationID=location.LocationID
+group by location.LocationID,LocationName
+order by 2 desc;
+
+-- 20. Retrieve couriers who have received payments totaling more than $1000 in a specific location(LocationID = X):
+select c.CourierID,c.SenderName,c.ReceiverName,sum(p.Amount) as TotalPayment
+from courier c 
+join payment p on c.CourierID=p.CourierID
+join location l on p.LocationID=l.LocationID
+where l.LocationID=8
+group by c.CourierID,c.SenderName,c.ReceiverName
+having TotalPayment > 1000
+order by TotalPayment desc;
+
+-- 21. Retrieve couriers who have received payments totaling more than $1000 after a certain date(PaymentDate > 'YYYY-MM-DD'):
+select c.CourierID,c.SenderName,c.ReceiverName,sum(p.Amount) as TotalPayment
+from courier c
+join payment p on c.CourierID=p.CourierID
+where PaymentDate > '2025-06-05'
+group by c.CourierID,c.SenderName,c.ReceiverName
+having TotalPayment >1000
+order by TotalPayment desc;
+
+-- 22. Retrieve locations where the total amount received is more than $5000 before a certain date(PaymentDate > 'YYYY-MM-DD')
+select l.LocationID,l.LocationName,sum(p.Amount) as TotalPayment
+from location l
+join payment p on l.LocationID=p.LocationID
+where PaymentDate < '2025-06-15'
+group by l.LocationID,l.LocationName
+having TotalPayment >5000
+order by TotalPayment desc;
+
+-- Task 4: Inner Join,Full Outer Join, Cross Join, Left Outer Join,Right Outer Join
+-- 23. Retrieve Payments with Courier Information
+select p.PaymentID,p.Amount,p.PaymentDate,c.CourierID,c.SenderName,c.ReceiverName,c.Status,c.TrackingNumber,c.DeliveryDate
+from payment p left join courier c on p.CourierID=c.CourierID
+order by p.PaymentDate desc;
+
+-- 24. Retrieve Payments with Location Information
+select p.PaymentID,p.Amount,p.PaymentDate,l.LocationID,l.LocationName
+from payment p left join location l on p.LocationID=l.LocationID
+order by p.PaymentDate desc;
+
+-- 25. Retrieve Payments with Courier and Location Information
+select  p.PaymentID,p.Amount,p.PaymentDate,c.CourierID,c.SenderName,c.ReceiverName,c.Status,c.TrackingNumber,c.DeliveryDate,l.LocationID,l.LocationName
+from payment p left join courier c on p.CourierID = c.CourierID left join location  l on p.LocationID = l.LocationID
+order by 2 desc;
+
+-- 26. List all payments with courier details
+select p.PaymentID,p.Amount,p.PaymentDate,c.CourierID,c.SenderName,c.ReceiverName,c.Status,c.TrackingNumber,c.DeliveryDate
+from payment p inner join courier c on p.CourierID = c.CourierID
+where Status in('delivered','In Transit')
+order by 1 desc;
+
+-- 27. Total payments received for each courier
+select c.SenderName,c.ReceiverName,sum(p.Amount) as TotalPayments
+from payment p left join courier c on p.CourierID = c.CourierID
+group by c.SenderName,c.ReceiverName
+order by 3 desc;
+
+-- 28. List payments made on a specific date
+select PaymentID,Amount,PaymentDate
+from payment
+where PaymentDate='2025-06-11'
+order by PaymentDate;
+
+-- 29. Get Courier Information for Each Payment
+select courier.CourierID,SenderName,ReceiverName,Status,TrackingNumber,DeliveryDate,PaymentID,Amount,PaymentDate
+from payment inner join courier on payment.CourierID = courier.CourierID
+order by PaymentDate;
+
+-- 30. Get Payment Details with Location
+select PaymentID,Amount,PaymentDate,LocationName,Address
+from payment join location on payment.LocationID = location.LocationID
+order by 3 desc;
+
+-- 31. Calculating Total Payments for Each Courier
+select c.CourierID, c.SenderName,c.ReceiverName,sum(p.Amount) as TotalPayments
+from payment p left join courier c on p.CourierID = c.CourierID
+group by c.SenderName,c.ReceiverName,c.CourierID
+order by TotalPayments desc;
+
+-- 32. List Payments Within a Date Range
+select PaymentID,Amount,PaymentDate
+from payment
+where PaymentDate between '2025-06-01 00:00:00' and '2025-06-15 23:59:59'
+order by PaymentDate;
+
+-- 33. Retrieve a list of all users and their corresponding courier records, including cases where there are no matches on either side
+select u.UserID,u.Name,u.Email,u.ContactNumber,u.Role,c.SenderName,c.ReceiverName,c.TrackingNumber
+from users u left join courier c using (CourierID)
+union 
+select u.UserID,u.Name,u.Email,u.ContactNumber,u.Role,c.SenderName,c.ReceiverName,c.TrackingNumber
+from courier c left join users u  using (CourierID);
+    
+-- 34. Retrieve a list of all couriers and their corresponding services, including cases where there are no matches on either side
+select c.CourierID,c.SenderName,c.ReceiverName,c.Status,c.TrackingNumber,c.DeliveryDate,s.ServiceID,s.ServiceName,s.Cost
+from courierservices s left join courier c using(ServiceID)
+union 
+select c.CourierID,c.SenderName,c.ReceiverName,c.Status,c.TrackingNumber,c.DeliveryDate,s.ServiceID,s.ServiceName,s.Cost
+from courier c left join courierservices s using(ServiceID);
+
+-- 35. Retrieve a list of all employees and their corresponding payments, including cases where there are no matches on either side
+Select e.EmployeeID, e.Name, e.Email, e.ContactNumber, e.Role, p.PaymentID, p.Amount, p.PaymentDate
+from employees e
+left join courier c ON e.EmployeeID = c.EmployeeID
+left join payment p ON c.CourierID = p.CourierID
+union
+select e.EmployeeID, e.Name, e.Email, e.ContactNumber, e.Role, p.PaymentID, p.Amount, p.PaymentDate
+from payment p
+left join courier c on p.CourierID = c.CourierID
+left join employees e on c.EmployeeID = e.EmployeeID
+order by EmployeeID, PaymentID;
+
+-- 36. List all users and all courier services, showing all possible combination
+select u.UserID,u.Name,cs.ServiceID,cs.ServiceName,cs.Cost
+from users u
+cross join courierservices cs
+order by u.UserID, cs.ServiceID;
+
+-- 37. List all employees and all locations, showing all possible combinations:
+select e.EmployeeID,e.Name,l.LocationID,l.LocationName
+from employees e
+cross join location l
+order by e.EmployeeID,l.LocationID;
+
+-- 38. Retrieve a list of couriers and their corresponding sender information (if available):
+select c.CourierID,u.Name as SenderName,u.Address as SenderAddress
+from courier c
+left join users u on c.CourierID = u.CourierID
+order by c.CourierID;
+
+-- 39. Retrieve a list of couriers and their corresponding receiver information (if available):
+select c.CourierID,c.ReceiverName,c.ReceiverAddress
+from courier c
+left join users u on c.CourierID = u.CourierID
+order by c.CourierID;
+
+-- 40. Retrieve a list of couriers along with the courier service details (if available):
+select c.CourierID,c.SenderName,c.TrackingNumber,c.DeliveryDate,cs.ServiceID,cs.ServiceName,cs.Cost
+from courier c
+left join courierservices cs on c.ServiceID=cs.ServiceID
+order by c.CourierID;
+
+-- 41. Retrieve a list of employees and the number of couriers assigned to each employee:
+select e.EmployeeID,e.Name,count(c.CourierID) as number_of_couriers
+from employees e
+left join courier c on e.EmployeeID =c.EmployeeID
+group by e.EmployeeID,e.Name
+order by 3 desc;
+
+-- 42. Retrieve a list of locations and the total payment amount received at each location:
+select l.LocationID,l.LocationName,sum(p.Amount)as total_payment_amount
+from location l
+left join payment p on l.LocationID=p.LocationID
+group by l.LocationID,l.LocationName
+order by 3 desc;
+
+-- 43. Retrieve all couriers sent by the same sender (based on SenderName).
+select SenderName,CourierID,ReceiverName,ReceiverAddress,Weight,Status,TrackingNumber
+from courier
+where SenderName in (
+        select SenderName 
+        from courier 
+        group by SenderName 
+        having COUNT(*) > 1)
+order by SenderName, CourierID;
+
+-- 44. List all employees who share the same role.
+select EmployeeID,Name,Role,Email,ContactNumber
+from employees
+where role in(
+	     select Role 
+         from employees
+         group by role 
+         having count(*)>1)
+order by Role,EmployeeID;       
+
+-- 45. Retrieve all payments made for couriers sent from the same location.
+select c.LocationID,l.LocationName,p.PaymentID,p.Amount,p.PaymentDate
+from courier c
+left join location l using (LocationID)
+left join payment p using(LocationID)
+WHERE c.LocationID IN (
+    SELECT LocationID 
+    FROM courier 
+    GROUP BY LocationID 
+    HAVING COUNT(*) > 1
+)
+order by c.LocationID , p.PaymentID;
+
+-- 46. Retrieve all couriers sent from the same location (based on SenderAddress).
+select SenderAddress,CourierID,SenderName,ReceiverName,ReceiverAddress,Weight,Status,TrackingNumber
+from courier
+where SenderAddress in (
+        select SenderAddress 
+		from courier 
+        group by SenderAddress 
+        having COUNT(*) > 1
+    )
+order by SenderAddress, CourierID;
+
+-- 47. List employees and the number of couriers they have delivered:
+select e.EmployeeID,e.Name,count(case when c.Status = 'delivered' then c.CourierID end) as number_of_couriers
+from employees e
+left join courier c ON e.EmployeeID = c.EmployeeID
+group by e.EmployeeID,e.Name
+order by e.EmployeeID;
+
+-- 48. Find couriers that were paid an amount greater than the cost of their respective courier services
+select c.CourierID,c.TrackingNumber,p.Amount,cs.Cost
+from courier c
+inner join courierservices cs on c.ServiceID=cs.ServiceID
+inner join payment p on c.CourierID = p.CourierID
+where p.Amount > cs.Cost
+order by c.CourierID;
+
+-- Scope: Inner Queries, Non Equi Joins, Equi joins,Exist,Any,All
+-- 49. Find couriers that have a weight greater than the average weight of all couriers
+select CourierID,Weight 
+from courier
+where Weight >(select avg(Weight) from courier);
+
+-- 50. Find the names of all employees who have a salary greater than the average salary:
+select Name
+from employees
+where Salary >(select avg(Salary) from employees);
+
+-- 51. Find the total cost of all courier services where the cost is less than the maximum cost
+select ServiceID,Cost
+from courierservices
+where Cost >(select max(Cost) from courierservices );
+
+-- 52. Find all couriers that have been paid for
+select CourierID ,SenderName,ReceiverName from courier
+where CourierID in (select CourierID from payment);
+
+-- 53. Find the locations where the maximum payment amount was made
+select l.LocationName,p.Amount,p.PaymentID from payment p
+join location l using (LocationID)
+where p.Amount =(select max(Amount) from payment);
+
+-- 54. Find all couriers whose weight is greater than the weight of all couriers sent by a specific sender (e.g., 'SenderName'):
+select * from  courier   
+where Weight>(select sum(Weight) from courier where SenderName='Eve Adams')
+order by Weight desc;
+    

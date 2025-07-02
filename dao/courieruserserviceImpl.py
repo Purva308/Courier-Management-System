@@ -3,24 +3,34 @@ from entity.courier import Courier
 from exception.InvalidEmployeeIdException import InvalidEmployeeIdException
 from exception.TrackingNumberNotFoundException import TrackingNumberNotFoundException
 from dao.icourieruserservice import ICourierUserService
+from util.db_prop_util import DBPropertyUtil
+from datetime import date
 
 class CourierUserServiceImpl(ICourierUserService):
-    tracking_counter=11
+    tracking_id_seq=101
     def __init__(self):
-        self.connection=DBConnUtil.get_connection()
+        properties_file = r"C:\Users\Raunak\PycharmProjects\CourierManagement(Assignment)\db.properties"
+        conn_string = DBPropertyUtil.get_connection_string(properties_file)
+        if not conn_string:
+            raise Exception("Failed to initialize database connection :Invalid connection string")
+        self.connection = DBConnUtil.get_connection(conn_string)
 
     def place_order(self,courier_obj):
         cursor=None
         try:
             cursor=self.connection.cursor()
-            tracking_number = f"TK{CourierUserServiceImpl.tracking_counter:03d}"
-            CourierUserServiceImpl.tracking_counter += 1
+            tracking_number = f"T{CourierUserServiceImpl.tracking_id_seq}"
+            cursor.execute("SELECT MAX(CAST(SUBSTRING(TrackingNumber, 2) AS UNSIGNED)) FROM Courier")
+            result = cursor.fetchone()[0]
+            CourierUserServiceImpl.tracking_id_seq = (result or 100) + 1
+            courier_obj.tracking_number(tracking_number)
             insert_query="""
-                INSERT INTO Courier(CourierID,SenderName,SenderAddress,ReceiverName,ReceiverAddress,Weight,Status,TrackingNumber,PickupTime,DeliveryDate,EmployeeID,LocationID,ServiceID)
-                VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+                INSERT INTO Courier(
+                SenderName,SenderAddress,ReceiverName,ReceiverAddress,
+                Weight,Status,TrackingNumber,PickupTime,DeliveryDate,EmployeeID,LocationID,ServiceID)
+                VALUES (  %s ,%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
             """
             values=(
-                courier_obj.get_courier_id(),
                 courier_obj.get_sender_name(),
                 courier_obj.get_sender_address(),
                 courier_obj.get_receiver_name(),
@@ -28,16 +38,17 @@ class CourierUserServiceImpl(ICourierUserService):
                 courier_obj.get_weight(),
                 courier_obj.get_status(),
                 courier_obj.get_tracking_number(),
-                courier_obj.get_delivery_date(),
                 courier_obj.get_pickup_time(),
+                courier_obj.get_delivery_date(),
                 courier_obj.get_employee_id(),
                 courier_obj.get_location_id(),
                 courier_obj.get_service_id()
             )
+
             cursor.execute(insert_query,values)
             self.connection.commit()
 
-            print(f"Order Placed Sucessfully. Your tracking number is{tracking_number}")
+            print(f"Order Placed Successfully. Your tracking number is{tracking_number}")
             return tracking_number
         except TrackingNumberNotFoundException as e:
             print(f"Error :{e}")
@@ -100,9 +111,12 @@ class CourierUserServiceImpl(ICourierUserService):
             result=cursor.fetchone()
 
             if result is None:
-                raise TrackingNumberNotFoundException
-            elif result[0]!="In Transit or Pending Pickup":
-                print("Only orders with status 'Pending Pickup'can be cancelled.")
+                raise TrackingNumberNotFoundException("Tracking number not found.")
+
+            status = result[0]
+
+            if status !=" Pending Pickup":
+                print("Only orders with status 'Pending Pickup 'can be cancelled.")
                 return False
             else:
                 updated_query="UPDATE courier SET Status='Cancelled' WHERE TrackingNumber=%s"
@@ -110,9 +124,11 @@ class CourierUserServiceImpl(ICourierUserService):
                 self.connection.commit()
                 print(f"Tracking number{tracking_number} cancelled Successfully")
                 return True
+        except TrackingNumberNotFoundException as e:
+            print("Error", e)
+            raise
         except Exception as e:
             print(f"Error cancelled the order:{e}")
             return False
         finally:
             cursor.close()
-

@@ -61,8 +61,8 @@ class Courier:
         self.__status=value
     def tracking_number(self,value):
         self.__tracking_number=value
-    def deilevery_date(self,value):
-        self.__deilevery_date=value
+    def delivery_date(self,value):
+        self.__delivery_date=value
     def pickup_time(self,value):
         self.__pickup_time=value
     def employee_id(self,value):
